@@ -11,13 +11,28 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
-            </div>
-
+<div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+        {{ __('Dashboard') }}
+    </x-nav-link>
+    @auth
+        @if(auth()->user()->hasRole('admin'))
+            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                {{ __('Admin Panel') }}
+            </x-nav-link>
+        @else
+            <x-nav-link :href="route('complaints.index')" :active="request()->routeIs('complaints.*')">
+                {{ __('Complaints') }}
+            </x-nav-link>
+            <x-nav-link :href="route('feedbacks.index')" :active="request()->routeIs('feedbacks.*')">
+                {{ __('Feedback') }}
+            </x-nav-link>
+            <x-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
+                {{ __('Messages') }}
+            </x-nav-link>
+        @endif
+    @endauth
+</div>
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
