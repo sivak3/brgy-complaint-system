@@ -20,17 +20,25 @@
             <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
                 {{ __('Admin Panel') }}
             </x-nav-link>
-        @else
-            <x-nav-link :href="route('complaints.index')" :active="request()->routeIs('complaints.*')">
-                {{ __('Complaints') }}
-            </x-nav-link>
-            <x-nav-link :href="route('feedbacks.index')" :active="request()->routeIs('feedbacks.*')">
-                {{ __('Feedback') }}
-            </x-nav-link>
-            <x-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
-                {{ __('Messages') }}
-            </x-nav-link>
+       @else
+    <x-nav-link :href="route('complaints.index')" :active="request()->routeIs('complaints.*')">
+        {{ __('Complaints') }}
+    </x-nav-link>
+    <x-nav-link :href="route('feedbacks.index')" :active="request()->routeIs('feedbacks.*')">
+        {{ __('Feedback') }}
+    </x-nav-link>
+    <x-nav-link :href="route('messages.index')" :active="request()->routeIs('messages.*')">
+        {{ __('Messages') }}
+    </x-nav-link>
+    <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.*')">
+        {{ __('Notifications') }}
+        @if(auth()->user()->unreadNotifications->count() > 0)
+            <span class="ml-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+                {{ auth()->user()->unreadNotifications->count() }}
+            </span>
         @endif
+    </x-nav-link>
+@endif
     @endauth
 </div>
             <!-- Settings Dropdown -->

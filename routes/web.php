@@ -6,6 +6,7 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,6 +35,11 @@ Route::resource('feedbacks', FeedbackController::class)
 Route::resource('messages', MessageController::class)
      ->middleware(['auth'])
      ->only(['index', 'create', 'store', 'show']);
+
+// Notifications
+Route::get('/notifications', [NotificationController::class, 'index'])
+     ->middleware(['auth'])
+     ->name('notifications.index');
 
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {

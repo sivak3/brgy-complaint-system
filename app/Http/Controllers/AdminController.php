@@ -38,16 +38,19 @@ class AdminController extends Controller
     }
 
     public function updateStatus(Request $request, Complaint $complaint)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,in_progress,resolved',
-        ]);
+{
+    $request->validate([
+        'status' => 'required|in:pending,in_progress,resolved',
+    ]);
 
-        $complaint->update(['status' => $request->status]);
+    $complaint->update(['status' => $request->status]);
 
-        return redirect()->route('admin.complaints')
-                         ->with('success', 'Complaint status updated!');
-    }
+    // Send notification to resident
+    $complaint->user->notify(new \App\Notifications\ComplaintStatusUpdated($complaint));
+
+    return redirect()->route('admin.complaints')
+                     ->with('success', 'Complaint status updated and resident notified!');
+}
 
     public function feedbacks()
     {
