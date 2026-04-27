@@ -16,7 +16,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Profile Routes (Breeze)
+// Profile Routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -32,9 +32,13 @@ Route::resource('feedbacks', FeedbackController::class)
      ->middleware(['auth'])
      ->only(['index', 'create', 'store', 'show']);
 
-Route::resource('messages', MessageController::class)
-     ->middleware(['auth'])
-     ->only(['index', 'create', 'store', 'show']);
+Route::middleware(['auth'])->group(function () {
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::get('/messages/create', [MessageController::class, 'create'])->name('messages.create');
+    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+    Route::get('/messages/{message}', [MessageController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{message}/reply', [MessageController::class, 'reply'])->name('messages.reply');
+});
 
 // Notifications
 Route::get('/notifications', [NotificationController::class, 'index'])
@@ -48,6 +52,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('/complaints/{complaint}/status', [AdminController::class, 'updateStatus'])->name('complaints.status');
     Route::get('/feedbacks', [AdminController::class, 'feedbacks'])->name('feedbacks');
     Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/messages', [AdminController::class, 'messages'])->name('messages');
 });
 
 require __DIR__.'/auth.php';

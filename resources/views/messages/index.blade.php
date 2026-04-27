@@ -1,70 +1,68 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Messages
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                💬 Messages
+            </h2>
+            <a href="{{ route('messages.create') }}"
+               class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 transition">
+                + New Message
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
 
-                @if(session('success'))
-                    <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
-                        {{ session('success') }}
-                    </div>
-                @endif
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-300 text-green-800 p-4 rounded-lg mb-6 flex items-center gap-2">
+                    <span>✅</span> {{ session('success') }}
+                </div>
+            @endif
 
-                <a href="{{ route('messages.create') }}"
-                   class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block">
-                    + New Message
-                </a>
+            <div class="bg-white shadow-sm rounded-xl overflow-hidden">
+                <div class="p-6 border-b">
+                    <h3 class="font-bold text-gray-800">Conversations</h3>
+                    <p class="text-sm text-gray-500 mt-1">Your message threads with barangay staff and residents</p>
+                </div>
 
-                <table class="w-full mt-4 border">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="p-2 text-left">From</th>
-                            <th class="p-2 text-left">To</th>
-                            <th class="p-2 text-left">Message</th>
-                            <th class="p-2 text-left">Status</th>
-                            <th class="p-2 text-left">Date</th>
-                            <th class="p-2 text-left">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($messages as $message)
-                        <tr class="border-t">
-                            <td class="p-2">{{ $message->sender->name }}</td>
-                            <td class="p-2">{{ $message->receiver->name }}</td>
-                            <td class="p-2">
-                                {{ Str::limit($message->body, 50) }}
-                            </td>
-                            <td class="p-2">
-                                @if($message->is_read)
-                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
-                                        Read
-                                    </span>
-                                @else
-                                    <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">
-                                        Unread
-                                    </span>
+                @forelse($messages as $otherId => $thread)
+                    @php
+                        $latest = $thread->last();
+                        $otherPerson = $latest->sender_id === auth()->id()
+                            ? $latest->receiver
+                            : $latest->sender;
+                    @endphp
+                    <a href="{{ route('messages.show', $thread->first()) }}"
+                       class="flex items-center gap-4 p-5 border-b hover:bg-gray-50 transition">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-700 font-bold text-lg flex-shrink-0">
+                            {{ strtoupper(substr($otherPerson->name, 0, 1)) }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-center">
+                                <p class="font-semibold text-gray-800">{{ $otherPerson->name }}</p>
+                                <p class="text-xs text-gray-400">{{ $latest->created_at->format('M d, Y') }}</p>
+                            </div>
+                            <p class="text-sm text-gray-500 truncate mt-1">
+                                @if($latest->sender_id === auth()->id())
+                                    <span class="text-purple-500">You: </span>
                                 @endif
-                            </td>
-                            <td class="p-2">{{ $message->created_at->format('M d, Y') }}</td>
-                            <td class="p-2">
-                                <a href="{{ route('messages.show', $message) }}"
-                                   class="text-blue-600 underline">View</a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="p-4 text-center text-gray-500">
-                                No messages yet.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                {{ Str::limit($latest->body, 60) }}
+                            </p>
+                        </div>
+                        <div class="text-gray-400 flex-shrink-0">→</div>
+                    </a>
+                @empty
+                    <div class="p-12 text-center text-gray-500">
+                        <p class="text-5xl mb-4">💬</p>
+                        <p class="font-semibold text-gray-700">No conversations yet</p>
+                        <p class="text-sm mt-1 mb-4">Start a conversation with barangay staff</p>
+                        <a href="{{ route('messages.create') }}"
+                           class="bg-purple-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 transition">
+                            Send First Message
+                        </a>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>

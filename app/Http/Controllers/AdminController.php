@@ -63,4 +63,18 @@ class AdminController extends Controller
         $users = User::latest()->get();
         return view('admin.users', compact('users'));
     }
+
+    public function messages()
+{
+    $messages = \App\Models\Message::with(['sender', 'receiver'])
+        ->latest()
+        ->get()
+        ->groupBy(function ($message) {
+            $ids = [$message->sender_id, $message->receiver_id];
+            sort($ids);
+            return implode('-', $ids);
+        });
+
+    return view('admin.messages', compact('messages'));
+}
 }

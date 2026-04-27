@@ -11,7 +11,8 @@ class ComplaintController extends Controller
     public function index()
     {
         $complaints = Complaint::where('user_id', Auth::id())
-                        ->latest()->get();
+            ->latest()
+            ->get();
         return view('complaints.index', compact('complaints'));
     }
 
@@ -24,24 +25,23 @@ class ComplaintController extends Controller
     {
         $request->validate([
             'title'       => 'required|string|max:255',
-            'description' => 'required|string',
             'category'    => 'required|string',
+            'description' => 'required|string',
             'attachment'  => 'nullable|file|mimes:jpg,png,pdf|max:2048',
         ]);
 
         $path = null;
         if ($request->hasFile('attachment')) {
-            $path = $request->file('attachment')
-                            ->store('attachments', 'public');
+            $path = $request->file('attachment')->store('attachments', 'public');
         }
 
         Complaint::create([
             'user_id'     => Auth::id(),
             'title'       => $request->title,
-            'description' => $request->description,
             'category'    => $request->category,
-            'attachment'  => $path,
+            'description' => $request->description,
             'status'      => 'pending',
+            'attachment'  => $path,
         ]);
 
         return redirect()->route('complaints.index')
@@ -50,6 +50,11 @@ class ComplaintController extends Controller
 
     public function show(Complaint $complaint)
     {
+        // Make sure resident can only view their own complaints
+        if ($complaint->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
+            abort(403);
+        }
+
         return view('complaints.show', compact('complaint'));
     }
 }
