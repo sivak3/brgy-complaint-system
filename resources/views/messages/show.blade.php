@@ -1,7 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
         <div style="display:flex;align-items:center;gap:12px;">
-            <a href="{{ route('messages.index') }}" style="width:36px;height:36px;background:white;border:1px solid #e8ecf4;border-radius:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;font-size:18px;transition:all 0.2s;" onmouseover="this.style.borderColor='#1a3a6b';this.style.color='#1a3a6b'" onmouseout="this.style.borderColor='#e8ecf4';this.style.color='#64748b'">←</a>
+            <a href="{{ auth()->user()->hasRole('admin') ? route('admin.messages') : route('messages.index') }}"
+               style="width:36px;height:36px;background:white;border:1px solid #e8ecf4;border-radius:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;font-size:18px;transition:all 0.2s;"
+               onmouseover="this.style.borderColor='#1a3a6b';this.style.color='#1a3a6b'"
+               onmouseout="this.style.borderColor='#e8ecf4';this.style.color='#64748b'">←</a>
             <div style="display:flex;align-items:center;gap:10px;">
                 <div style="width:38px;height:38px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:15px;">
                     {{ strtoupper(substr($otherUser->name, 0, 1)) }}
@@ -84,10 +87,14 @@
                               onfocus="this.style.borderColor='#7c3aed';this.style.boxShadow='0 0 0 3px rgba(124,58,237,0.1)'"
                               onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"
                               placeholder="Type your reply...">{{ old('body') }}</textarea>
-                    @error('body')<p style="color:#ef4444;font-size:12px;margin-top:6px;">{{ $message }}</p>@enderror
+                    @error('body')
+                        <p style="color:#ef4444;font-size:12px;margin-top:6px;">{{ $message }}</p>
+                    @enderror
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;">
-                        <a href="{{ route('messages.index') }}" style="font-size:13px;color:#64748b;text-decoration:none;font-weight:500;">← Back to Messages</a>
-                        <button type="submit" class="btn-primary" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);padding:10px 24px;">
+                        <a href="{{ auth()->user()->hasRole('admin') ? route('admin.messages') : route('messages.index') }}"
+                           style="font-size:13px;color:#64748b;text-decoration:none;font-weight:500;">← Back to Messages</a>
+                        <button type="submit" class="btn-primary"
+                                style="background:linear-gradient(135deg,#7c3aed,#5b21b6);padding:10px 24px;">
                             Send Reply ➤
                         </button>
                     </div>

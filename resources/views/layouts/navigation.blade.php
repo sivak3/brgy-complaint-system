@@ -39,12 +39,19 @@
                             ⭐ Feedbacks
                         </a>
 
-                        <a href="{{ route('admin.messages') }}"
-   class="px-3 py-2 rounded-lg text-sm font-medium transition
+                       <a href="{{ route('admin.messages') }}"
+   class="relative px-3 py-2 rounded-lg text-sm font-medium transition
        {{ request()->routeIs('admin.messages') ? 'bg-blue-700 text-white' : 'text-blue-200 hover:bg-blue-700 hover:text-white' }}">
     💬 Messages
+    @php
+        $unreadCount = \App\Models\Message::where('receiver_id', auth()->id())->where('is_read', false)->count();
+    @endphp
+    @if($unreadCount > 0)
+        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+            {{ $unreadCount }}
+        </span>
+    @endif
 </a>
-
                         <a href="{{ route('admin.users') }}"
                            class="px-3 py-2 rounded-lg text-sm font-medium transition
                                {{ request()->routeIs('admin.users') ? 'bg-blue-700 text-white' : 'text-blue-200 hover:bg-blue-700 hover:text-white' }}">
@@ -132,9 +139,17 @@
         </a>
         @auth
             @if(auth()->user()->hasRole('admin'))
-                <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-lg text-sm text-blue-200 hover:bg-blue-700 hover:text-white">⚙️ Admin Panel</a>
+               <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-lg text-sm text-blue-200 hover:bg-blue-700 hover:text-white">⚙️ Admin Panel</a>
                 <a href="{{ route('admin.complaints') }}" class="block px-3 py-2 rounded-lg text-sm text-blue-200 hover:bg-blue-700 hover:text-white">📋 Complaints</a>
                 <a href="{{ route('admin.feedbacks') }}" class="block px-3 py-2 rounded-lg text-sm text-blue-200 hover:bg-blue-700 hover:text-white">⭐ Feedbacks</a>
+                <a href="{{ route('admin.messages') }}" class="relative block px-3 py-2 rounded-lg text-sm text-blue-200 hover:bg-blue-700 hover:text-white">
+                    💬 Messages
+                    @if($unreadCount > 0)
+                        <span class="absolute top-1 right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                            {{ $unreadCount }}
+                        </span>
+                    @endif
+                </a>
                 <a href="{{ route('admin.users') }}" class="block px-3 py-2 rounded-lg text-sm text-blue-200 hover:bg-blue-700 hover:text-white">👥 Users</a>
             @else
                 <a href="{{ route('complaints.index') }}" class="block px-3 py-2 rounded-lg text-sm text-blue-200 hover:bg-blue-700 hover:text-white">📋 Complaints</a>

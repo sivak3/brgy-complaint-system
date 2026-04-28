@@ -8,7 +8,7 @@ class Complaint extends Model
 {
     protected $fillable = [
         'user_id', 'title', 'description',
-        'category', 'status', 'attachment'
+        'category', 'status', 'attachment', 'is_read' // 👈 added
     ];
 
     public function user()

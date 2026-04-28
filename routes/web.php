@@ -16,14 +16,12 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Profile Routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Resident Routes
 Route::resource('complaints', ComplaintController::class)
      ->middleware(['auth'])
      ->only(['index', 'create', 'store', 'show']);
@@ -40,15 +38,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/messages/{message}/reply', [MessageController::class, 'reply'])->name('messages.reply');
 });
 
-// Notifications
 Route::get('/notifications', [NotificationController::class, 'index'])
      ->middleware(['auth'])
      ->name('notifications.index');
 
-// Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/complaints', [AdminController::class, 'complaints'])->name('complaints');
+    Route::get('/complaints/{complaint}', [AdminController::class, 'showComplaint'])->name('complaints.show'); // NEW
     Route::patch('/complaints/{complaint}/status', [AdminController::class, 'updateStatus'])->name('complaints.status');
     Route::get('/feedbacks', [AdminController::class, 'feedbacks'])->name('feedbacks');
     Route::get('/users', [AdminController::class, 'users'])->name('users');

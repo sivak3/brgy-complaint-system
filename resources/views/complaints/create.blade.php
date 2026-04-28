@@ -48,12 +48,15 @@
 
                     <div style="margin-bottom:28px;">
                         <label class="form-label">Attachment <span style="color:#94a3b8;font-weight:400;">(optional)</span></label>
-                        <div style="border:2px dashed #e2e8f0;border-radius:10px;padding:20px;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#1a3a6b'" onmouseout="this.style.borderColor='#e2e8f0'">
+                        <div style="position:relative;border:2px dashed #e2e8f0;border-radius:10px;padding:20px;text-align:center;transition:all 0.2s;cursor:pointer;"
+                             onmouseover="this.style.borderColor='#1a3a6b'" onmouseout="this.style.borderColor='#e2e8f0'"
+                             onclick="document.getElementById('attachment-input').click()">
                             <p style="font-size:24px;margin-bottom:8px;">📎</p>
                             <p style="font-size:13px;color:#64748b;margin-bottom:8px;">Click to upload or drag and drop</p>
-                            <input type="file" name="attachment" accept=".jpg,.png,.pdf" style="width:100%;opacity:0.01;position:absolute;cursor:pointer;" onchange="document.getElementById('file-name').textContent=this.files[0]?.name||'No file chosen'">
                             <p id="file-name" style="font-size:12px;color:#94a3b8;">JPG, PNG, PDF (max 2MB)</p>
                         </div>
+                        <input type="file" id="attachment-input" name="attachment" accept=".jpg,.png,.pdf" style="display:none;"
+                               onchange="document.getElementById('file-name').textContent=this.files[0]?.name||'No file chosen'">
                         @error('attachment')<p style="color:#ef4444;font-size:12px;margin-top:6px;">{{ $message }}</p>@enderror
                     </div>
 

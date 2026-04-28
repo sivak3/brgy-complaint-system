@@ -10,15 +10,15 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('feedbacks', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        $table->string('subject');
-        $table->text('message');
-        $table->integer('rating')->default(5);
-        $table->timestamps();
-    });
+{Schema::create('feedbacks', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->string('subject');
+    $table->text('message');
+    $table->integer('rating')->default(5);
+    $table->boolean('is_read')->default(false); // 👈 add this
+    $table->timestamps();
+});
 }
 
     /**

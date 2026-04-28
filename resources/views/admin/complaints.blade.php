@@ -5,7 +5,6 @@
                 <p style="font-size:12px;color:#94a3b8;font-weight:500;text-transform:uppercase;letter-spacing:1px;">Administration</p>
                 <h1 class="font-display" style="font-size:24px;color:#0f2144;margin-top:2px;">Manage Complaints</h1>
             </div>
-            
         </div>
     </x-slot>
 
@@ -15,7 +14,6 @@
         </div>
     @endif
 
-    <!-- Stats Row -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
         <div class="stat-card fade-in fade-in-1" style="border-left:4px solid #1a3a6b;padding:20px;">
             <p style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Total</p>
@@ -50,7 +48,8 @@
             </thead>
             <tbody>
                 @forelse($complaints as $index => $complaint)
-                <tr>
+                <tr style="cursor:pointer;" onclick="window.location='{{ route('admin.complaints.show', $complaint) }}'"
+                    onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
                     <td style="color:#94a3b8;font-size:13px;">{{ $index + 1 }}</td>
                     <td>
                         <div style="display:flex;align-items:center;gap:10px;">
@@ -64,7 +63,7 @@
                     </td>
                     <td><span class="badge-{{ $complaint->status }}">{{ $complaint->status === 'in_progress' ? 'In Progress' : ucfirst($complaint->status) }}</span></td>
                     <td style="color:#94a3b8;font-size:13px;">{{ $complaint->created_at->format('M d, Y') }}</td>
-                    <td>
+                    <td onclick="event.stopPropagation();">
                         <form method="POST" action="{{ route('admin.complaints.status', $complaint) }}">
                             @csrf
                             @method('PATCH')

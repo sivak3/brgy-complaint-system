@@ -18,21 +18,36 @@
                 <h3 style="font-size:16px;font-weight:700;color:#0f2144;">Conversations</h3>
                 <p style="font-size:13px;color:#94a3b8;margin-top:2px;">Your message threads with barangay staff</p>
             </div>
-            <a href="{{ route('messages.create') }}" class="btn-primary" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);">+ New Message</a>
+            @if(auth()->user()->hasRole('admin') || $messages->isEmpty())
+                <a href="{{ route('messages.create') }}" class="btn-primary"
+                   style="background:linear-gradient(135deg,#7c3aed,#5b21b6);">+ New Message</a>
+            @endif
         </div>
 
         @forelse($messages as $otherId => $thread)
             @php
-                $latest = $thread->last();
-                $otherPerson = $latest->sender_id === auth()->id() ? $latest->receiver : $latest->sender;
+                $latest      = $thread->sortByDesc('created_at')->first();
+                $otherPerson = $latest->sender_id === auth()->id()
+                               ? $latest->receiver
+                               : $latest->sender;
+                $unread      = $thread->where('is_read', false)
+                                      ->where('receiver_id', auth()->id())
+                                      ->count();
             @endphp
             <a href="{{ route('messages.show', $thread->first()) }}"
                style="display:flex;align-items:center;gap:16px;padding:18px 24px;border-bottom:1px solid #f1f5f9;text-decoration:none;transition:all 0.2s;"
                onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
 
                 <!-- Avatar -->
-                <div style="width:48px;height:48px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:14px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;flex-shrink:0;">
-                    {{ strtoupper(substr($otherPerson->name, 0, 1)) }}
+                <div style="position:relative;flex-shrink:0;">
+                    <div style="width:48px;height:48px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:14px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;">
+                        {{ strtoupper(substr($otherPerson->name, 0, 1)) }}
+                    </div>
+                    @if($unread > 0)
+                        <div style="position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#ef4444;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:700;border:2px solid white;">
+                            {{ $unread }}
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Info -->
@@ -50,14 +65,17 @@
                 </div>
 
                 <!-- Arrow -->
-                <div style="width:32px;height:32px;background:#f5f3ff;color:#7c3aed;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">→</div>
+                <div style="width:32px;height:32px;background:#f5f3ff;color:#7c3aed;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">
+                    {{ $unread > 0 ? '🔵' : '→' }}
+                </div>
             </a>
         @empty
             <div style="text-align:center;padding:60px 20px;">
                 <div style="width:64px;height:64px;background:#f5f3ff;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;">💬</div>
                 <p style="font-weight:600;color:#374151;margin-bottom:6px;">No conversations yet</p>
                 <p style="font-size:13px;color:#94a3b8;margin-bottom:20px;">Start a conversation with barangay staff</p>
-                <a href="{{ route('messages.create') }}" class="btn-primary" style="display:inline-flex;background:linear-gradient(135deg,#7c3aed,#5b21b6);">+ Send First Message</a>
+                <a href="{{ route('messages.create') }}" class="btn-primary"
+                   style="display:inline-flex;background:linear-gradient(135deg,#7c3aed,#5b21b6);">+ Send First Message</a>
             </div>
         @endforelse
     </div>

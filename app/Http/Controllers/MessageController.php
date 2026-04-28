@@ -12,13 +12,15 @@ class MessageController extends Controller
 {
     public function index()
     {
-        $messages = Message::where('sender_id', Auth::id())
-            ->orWhere('receiver_id', Auth::id())
+        $user = Auth::user();
+
+        $messages = Message::where('sender_id', $user->id)
+            ->orWhere('receiver_id', $user->id)
             ->with(['sender', 'receiver'])
             ->latest()
             ->get()
-            ->groupBy(function ($message) {
-                return $message->sender_id === Auth::id()
+            ->groupBy(function ($message) use ($user) {
+                return $message->sender_id === $user->id
                     ? $message->receiver_id
                     : $message->sender_id;
             });
@@ -28,7 +30,18 @@ class MessageController extends Controller
 
     public function create()
     {
-        $users = User::where('id', '!=', Auth::id())->get();
+        $user = Auth::user();
+
+        if ($user->hasRole('admin')) {
+            $users = User::whereDoesntHave('roles', function ($q) {
+                $q->where('name', 'admin');
+            })->where('id', '!=', $user->id)->get();
+        } else {
+            $users = User::whereHas('roles', function ($q) {
+                $q->where('name', 'admin');
+            })->get();
+        }
+
         return view('messages.create', compact('users'));
     }
 
@@ -39,14 +52,23 @@ class MessageController extends Controller
             'body'        => 'required|string|max:2000',
         ]);
 
+        $user     = Auth::user();
+        $receiver = User::findOrFail($request->receiver_id);
+
+        if (!$user->hasRole('admin') && !$receiver->hasRole('admin')) {
+            return back()->withErrors(['receiver_id' => 'You can only send messages to the admin.']);
+        }
+
+        if ($user->hasRole('admin') && $receiver->hasRole('admin')) {
+            return back()->withErrors(['receiver_id' => 'Admin cannot message another admin.']);
+        }
+
         $message = Message::create([
-            'sender_id'   => Auth::id(),
-            'receiver_id' => $request->receiver_id,
+            'sender_id'   => $user->id,
+            'receiver_id' => $receiver->id,
             'body'        => $request->body,
         ]);
 
-        // Notify the receiver
-        $receiver = User::findOrFail($request->receiver_id);
         $receiver->notify(new NewMessageReceived($message));
 
         return redirect()->route('messages.index')
@@ -55,40 +77,41 @@ class MessageController extends Controller
 
     public function show(Message $message)
     {
-        $otherId = $message->sender_id === Auth::id()
+        $user = Auth::user();
+
+        if ($message->sender_id !== $user->id && $message->receiver_id !== $user->id) {
+            abort(403);
+        }
+
+        $otherId = $message->sender_id === $user->id
             ? $message->receiver_id
             : $message->sender_id;
 
         $otherUser = User::findOrFail($otherId);
 
-        $thread = Message::where(function ($q) use ($otherId) {
-                $q->where('sender_id', Auth::id())
+        $thread = Message::where(function ($q) use ($user, $otherId) {
+                $q->where('sender_id', $user->id)
                   ->where('receiver_id', $otherId);
-            })->orWhere(function ($q) use ($otherId) {
+            })->orWhere(function ($q) use ($user, $otherId) {
                 $q->where('sender_id', $otherId)
-                  ->where('receiver_id', Auth::id());
+                  ->where('receiver_id', $user->id);
             })
             ->with(['sender', 'receiver'])
             ->oldest()
             ->get();
 
-        // If admin viewing resident conversation
-        if (Auth::user()->hasRole('admin') && $thread->isEmpty()) {
-            $thread = Message::where(function ($q) use ($message) {
-                    $q->where('sender_id', $message->sender_id)
-                      ->where('receiver_id', $message->receiver_id);
-                })->orWhere(function ($q) use ($message) {
-                    $q->where('sender_id', $message->receiver_id)
-                      ->where('receiver_id', $message->sender_id);
-                })
-                ->with(['sender', 'receiver'])
-                ->oldest()
-                ->get();
+        // Mark messages as read in messages table
+        Message::where('receiver_id', $user->id)
+            ->whereIn('id', $thread->pluck('id'))
+            ->update(['is_read' => true]);
 
-            $otherUser = $message->sender_id === Auth::id()
-                ? $message->receiver
-                : $message->sender;
-        }
+        // Mark related Laravel notifications as read (clears bell + sidebar)
+        $threadMessageIds = $thread->pluck('id')->toArray();
+        $user->unreadNotifications()
+            ->where('type', 'App\Notifications\NewMessageReceived')
+            ->get()
+            ->filter(fn($n) => in_array($n->data['message_id'] ?? null, $threadMessageIds))
+            ->each->markAsRead();
 
         return view('messages.show', compact('thread', 'otherUser'));
     }
@@ -99,24 +122,22 @@ class MessageController extends Controller
             'body' => 'required|string|max:2000',
         ]);
 
-        $receiverId = $message->sender_id === Auth::id()
+        $user = Auth::user();
+
+        if ($message->sender_id !== $user->id && $message->receiver_id !== $user->id) {
+            abort(403);
+        }
+
+        $receiverId = $message->sender_id === $user->id
             ? $message->receiver_id
             : $message->sender_id;
 
-        // If admin, reply to the other person in the thread
-        if (Auth::user()->hasRole('admin')) {
-            $receiverId = $message->sender_id === Auth::id()
-                ? $message->receiver_id
-                : $message->sender_id;
-        }
-
         $newMessage = Message::create([
-            'sender_id'   => Auth::id(),
+            'sender_id'   => $user->id,
             'receiver_id' => $receiverId,
             'body'        => $request->body,
         ]);
 
-        // Notify the receiver
         $receiver = User::findOrFail($receiverId);
         $receiver->notify(new NewMessageReceived($newMessage));
 

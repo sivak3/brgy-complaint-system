@@ -9,7 +9,7 @@ class Feedback extends Model
     protected $table = 'feedbacks';
 
     protected $fillable = [
-        'user_id', 'subject', 'message', 'rating'
+        'user_id', 'subject', 'message', 'rating', 'is_read' // 👈 added
     ];
 
     public function user()

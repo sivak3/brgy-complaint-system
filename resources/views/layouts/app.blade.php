@@ -115,15 +115,40 @@
                         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                             <span>⚙️</span> Admin Panel
                         </a>
+
+                        {{-- Complaints with unread badge --}}
                         <a href="{{ route('admin.complaints') }}" class="{{ request()->routeIs('admin.complaints') ? 'active' : '' }}">
                             <span>📋</span> Complaints
+                            @php $unreadComplaints = \App\Models\Complaint::where('is_read', false)->count(); @endphp
+                            @if($unreadComplaints > 0)
+                                <span style="margin-left:auto;background:#ef4444;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;">
+                                    {{ $unreadComplaints }}
+                                </span>
+                            @endif
                         </a>
+
+                        {{-- Feedbacks with unread badge --}}
                         <a href="{{ route('admin.feedbacks') }}" class="{{ request()->routeIs('admin.feedbacks') ? 'active' : '' }}">
                             <span>⭐</span> Feedbacks
+                            @php $unreadFeedbacks = \App\Models\Feedback::where('is_read', false)->count(); @endphp
+                            @if($unreadFeedbacks > 0)
+                                <span style="margin-left:auto;background:#ef4444;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;">
+                                    {{ $unreadFeedbacks }}
+                                </span>
+                            @endif
                         </a>
-                        <a href="{{ route('admin.messages') }}" class="{{ request()->routeIs('admin.messages') ? 'active' : '' }}">
+
+                        {{-- Messages with unread badge --}}
+                        <a href="{{ route('admin.messages') }}" class="{{ request()->routeIs('admin.messages') ? 'active' : '' }}" style="position:relative;">
                             <span>💬</span> Messages
+                            @php $unreadCount = \App\Models\Message::where('receiver_id', auth()->id())->where('is_read', false)->count(); @endphp
+                            @if($unreadCount > 0)
+                                <span style="margin-left:auto;background:#ef4444;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;">
+                                    {{ $unreadCount }}
+                                </span>
+                            @endif
                         </a>
+
                         <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users') ? 'active' : '' }}">
                             <span>👥</span> Users
                         </a>
@@ -135,8 +160,14 @@
                         <a href="{{ route('feedbacks.index') }}" class="{{ request()->routeIs('feedbacks.*') ? 'active' : '' }}">
                             <span>⭐</span> My Feedbacks
                         </a>
-                        <a href="{{ route('messages.index') }}" class="{{ request()->routeIs('messages.*') ? 'active' : '' }}">
+                        <a href="{{ route('messages.index') }}" class="{{ request()->routeIs('messages.*') ? 'active' : '' }}" style="position:relative;">
                             <span>💬</span> Messages
+                            @php $residentUnread = \App\Models\Message::where('receiver_id', auth()->id())->where('is_read', false)->count(); @endphp
+                            @if($residentUnread > 0)
+                                <span style="margin-left:auto;background:#ef4444;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;">
+                                    {{ $residentUnread }}
+                                </span>
+                            @endif
                         </a>
                         <a href="{{ route('notifications.index') }}" class="{{ request()->routeIs('notifications.*') ? 'active' : '' }}">
                             <span>🔔</span> Notifications
