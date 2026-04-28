@@ -1,74 +1,70 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                My Feedbacks
-            </h2>
-            <a href="{{ route('feedbacks.create') }}"
-               class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition">
-                + New Feedback
-            </a>
+        <div>
+            <p style="font-size:12px;color:#94a3b8;font-weight:500;text-transform:uppercase;letter-spacing:1px;">Resident Services</p>
+            <h1 class="font-display" style="font-size:24px;color:#0f2144;margin-top:2px;">My Feedbacks</h1>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-300 text-green-800 p-4 rounded-lg mb-6 flex items-center gap-2">
-                    <span>✅</span> {{ session('success') }}
-                </div>
-            @endif
-
-            <div class="bg-white shadow-sm rounded-xl overflow-hidden">
-                <div class="p-6 border-b">
-                    <h3 class="font-semibold text-gray-700">All My Feedbacks</h3>
-                    <p class="text-sm text-gray-500 mt-1">Your submitted feedback to the barangay</p>
-                </div>
-                <table class="w-full">
-                    <thead class="bg-gray-50 border-b">
-                        <tr>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">#</th>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">Subject</th>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">Rating</th>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">Message</th>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">Date</th>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @forelse($feedbacks as $index => $feedback)
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-4 text-gray-500 text-sm">{{ $index + 1 }}</td>
-                            <td class="p-4 font-medium text-gray-800">{{ $feedback->subject }}</td>
-                            <td class="p-4">
-                                <div class="flex">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <span class="{{ $i <= $feedback->rating ? 'text-yellow-400' : 'text-gray-300' }} text-lg">★</span>
-                                    @endfor
-                                </div>
-                            </td>
-                            <td class="p-4 text-gray-600 text-sm">{{ Str::limit($feedback->message, 50) }}</td>
-                            <td class="p-4 text-gray-500 text-sm">{{ $feedback->created_at->format('M d, Y') }}</td>
-                            <td class="p-4">
-                                <a href="{{ route('feedbacks.show', $feedback) }}"
-                                   class="text-green-600 hover:underline text-sm font-medium">
-                                    View →
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="p-8 text-center text-gray-500">
-                                <p class="text-4xl mb-3">⭐</p>
-                                <p class="font-medium">No feedbacks yet.</p>
-                                <p class="text-sm mt-1">Click "New Feedback" to submit one.</p>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+    @if(session('success'))
+        <div class="fade-in fade-in-1" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:10px;color:#15803d;font-size:14px;font-weight:500;">
+            <span>✅</span> {{ session('success') }}
         </div>
+    @endif
+
+    <div class="card fade-in fade-in-1">
+        <div style="padding:24px 28px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <h3 style="font-size:16px;font-weight:700;color:#0f2144;">All My Feedbacks</h3>
+                <p style="font-size:13px;color:#94a3b8;margin-top:2px;">Your submitted feedback to the barangay</p>
+            </div>
+            <a href="{{ route('feedbacks.create') }}" class="btn-gold">+ New Feedback</a>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Subject</th>
+                    <th>Rating</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($feedbacks as $index => $feedback)
+                <tr>
+                    <td style="color:#94a3b8;font-size:13px;">{{ $index + 1 }}</td>
+                    <td style="font-weight:600;color:#0f2144;">{{ $feedback->subject }}</td>
+                    <td>
+                        <div style="display:flex;gap:2px;">
+                            @for($i = 1; $i <= 5; $i++)
+                                <span style="color:{{ $i <= $feedback->rating ? '#c9a84c' : '#e2e8f0' }};font-size:16px;">★</span>
+                            @endfor
+                        </div>
+                    </td>
+                    <td style="color:#64748b;font-size:13px;">{{ Str::limit($feedback->message, 50) }}</td>
+                    <td style="color:#94a3b8;font-size:13px;">{{ $feedback->created_at->format('M d, Y') }}</td>
+                    <td>
+                        <a href="{{ route('feedbacks.show', $feedback) }}"
+                           style="background:#fffbeb;color:#a8832a;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:all 0.2s;"
+                           onmouseover="this.style.background='#c9a84c';this.style.color='white'"
+                           onmouseout="this.style.background='#fffbeb';this.style.color='#a8832a'">
+                            View →
+                        </a>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" style="text-align:center;padding:60px 20px;">
+                        <div style="width:64px;height:64px;background:#fffbeb;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;">⭐</div>
+                        <p style="font-weight:600;color:#374151;margin-bottom:6px;">No feedbacks yet</p>
+                        <p style="font-size:13px;color:#94a3b8;margin-bottom:20px;">Share your experience with the barangay</p>
+                        <a href="{{ route('feedbacks.create') }}" class="btn-gold" style="display:inline-flex;">+ Give Feedback</a>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </x-app-layout>

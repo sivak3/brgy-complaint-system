@@ -1,79 +1,71 @@
 <x-guest-layout>
-    <div class="min-h-screen bg-gradient-to-br from-blue-800 to-blue-600 flex items-center justify-center px-4">
-        <div class="w-full max-w-md">
-
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <span class="text-6xl">🏛️</span>
-                <h1 class="text-white text-2xl font-bold mt-3">Barangay Management System</h1>
-                <p class="text-blue-200 text-sm mt-1">Complaint & Feedback Portal</p>
-            </div>
-
-            <!-- Card -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-1">Welcome Back!</h2>
-                <p class="text-gray-500 text-sm mb-6">Log in to your resident account</p>
-
-                <!-- Session Status -->
-                <x-auth-session-status class="mb-4" :status="session('status')" />
-
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-
-                    <!-- Email -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                        <input type="email" name="email" value="{{ old('email') }}"
-                               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               placeholder="Enter your email" required autofocus>
-                        @error('email')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Password -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input type="password" name="password"
-                               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               placeholder="Enter your password" required>
-                        @error('password')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Remember Me -->
-                    <div class="flex items-center justify-between mb-6">
-                        <label class="flex items-center gap-2 text-sm text-gray-600">
-                            <input type="checkbox" name="remember" class="rounded">
-                            Remember me
-                        </label>
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}"
-                               class="text-sm text-blue-600 hover:underline">
-                                Forgot password?
-                            </a>
-                        @endif
-                    </div>
-
-                    <!-- Submit -->
-                    <button type="submit"
-                            class="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition">
-                        Log In
-                    </button>
-
-                    <p class="text-center text-sm text-gray-500 mt-4">
-                        Don't have an account?
-                        <a href="{{ route('register') }}" class="text-blue-600 font-semibold hover:underline">
-                            Register here
-                        </a>
-                    </p>
-                </form>
-            </div>
-
-            <p class="text-center text-blue-200 text-xs mt-6">
-                © 2026 Barangay Complaint & Feedback Management System
-            </p>
-        </div>
+    <div style="margin-bottom:32px;">
+        <h2 class="font-display" style="font-size:28px;color:#0f2144;margin-bottom:8px;">Welcome Back</h2>
+        <p style="color:#64748b;font-size:14px;">Sign in to your barangay portal account</p>
     </div>
+
+    <x-auth-session-status style="margin-bottom:16px;" :status="session('status')" />
+
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
+
+        <!-- Email -->
+        <div style="margin-bottom:20px;">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" value="{{ old('email') }}"
+                   class="form-input"
+                   placeholder="Enter your email address"
+                   required autofocus>
+            @error('email')
+                <p style="color:#ef4444;font-size:12px;margin-top:6px;">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <!-- Password -->
+        <div style="margin-bottom:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <label class="form-label" style="margin-bottom:0;">Password</label>
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}"
+                       style="font-size:12px;color:#1a3a6b;text-decoration:none;font-weight:500;">
+                        Forgot password?
+                    </a>
+                @endif
+            </div>
+            <input type="password" name="password"
+                   class="form-input"
+                   placeholder="Enter your password"
+                   required>
+            @error('password')
+                <p style="color:#ef4444;font-size:12px;margin-top:6px;">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <!-- Remember Me -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
+            <input type="checkbox" name="remember" id="remember"
+                   style="width:16px;height:16px;accent-color:#1a3a6b;">
+            <label for="remember" style="font-size:13px;color:#64748b;cursor:pointer;">Remember me for 30 days</label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-primary">
+            Sign In to Portal
+        </button>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;gap:12px;margin:24px 0;">
+            <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+            <span style="font-size:12px;color:#94a3b8;">Don't have an account?</span>
+            <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+        </div>
+
+        <!-- Register Link -->
+        <a href="{{ route('register') }}"
+           style="display:block;text-align:center;padding:13px;border-radius:10px;border:1.5px solid #e2e8f0;font-size:14px;font-weight:600;color:#1a3a6b;text-decoration:none;transition:all 0.2s;"
+           onmouseover="this.style.borderColor='#1a3a6b';this.style.background='#f0f4ff';"
+           onmouseout="this.style.borderColor='#e2e8f0';this.style.background='transparent';">
+            Create Resident Account
+        </a>
+    </form>
 </x-guest-layout>

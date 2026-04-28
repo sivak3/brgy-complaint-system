@@ -1,103 +1,101 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('messages.index') }}" class="text-gray-500 hover:text-gray-700">←</a>
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-700 font-bold text-sm">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <a href="{{ route('messages.index') }}" style="width:36px;height:36px;background:white;border:1px solid #e8ecf4;border-radius:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#64748b;font-size:18px;transition:all 0.2s;" onmouseover="this.style.borderColor='#1a3a6b';this.style.color='#1a3a6b'" onmouseout="this.style.borderColor='#e8ecf4';this.style.color='#64748b'">←</a>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:38px;height:38px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:15px;">
                     {{ strtoupper(substr($otherUser->name, 0, 1)) }}
                 </div>
-                <h2 class="font-semibold text-xl text-gray-800">Conversation with {{ $otherUser->name }}</h2>
+                <div>
+                    <p style="font-size:12px;color:#94a3b8;font-weight:500;text-transform:uppercase;letter-spacing:1px;">Conversation</p>
+                    <h1 class="font-display" style="font-size:20px;color:#0f2144;margin-top:1px;">{{ $otherUser->name }}</h1>
+                </div>
             </div>
         </div>
     </x-slot>
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
 
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-300 text-green-800 p-3 rounded-lg mb-4 text-sm flex items-center gap-2">
-                    <span>✅</span> {{ session('success') }}
-                </div>
-            @endif
+    <div style="max-width:700px;">
 
-            <!-- Conversation Thread -->
-            <div class="bg-white shadow-sm rounded-xl overflow-hidden mb-4">
-                <div class="bg-purple-600 px-6 py-4 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-purple-400 rounded-full flex items-center justify-center text-white font-bold">
+        @if(session('success'))
+            <div class="fade-in fade-in-1" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:#15803d;font-size:14px;font-weight:500;">
+                <span>✅</span> {{ session('success') }}
+            </div>
+        @endif
+
+        <!-- Thread Card -->
+        <div class="card fade-in fade-in-1" style="overflow:hidden;margin-bottom:16px;">
+            <div style="background:linear-gradient(135deg,#7c3aed,#5b21b6);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;">
                         {{ strtoupper(substr($otherUser->name, 0, 1)) }}
                     </div>
                     <div>
-                        <p class="text-white font-semibold">{{ $otherUser->name }}</p>
-                        <p class="text-purple-200 text-xs">{{ $thread->count() }} message(s) in this conversation</p>
+                        <p style="color:white;font-weight:600;font-size:14px;">{{ $otherUser->name }}</p>
+                        <p style="color:rgba(255,255,255,0.5);font-size:12px;">{{ $thread->count() }} message(s)</p>
                     </div>
                 </div>
-
-                <!-- Messages -->
-                <div class="p-6 space-y-4 max-h-96 overflow-y-auto" id="message-thread">
-                    @foreach($thread as $msg)
-                        @if($msg->sender_id === auth()->id())
-                            <!-- Sent Message (Right) -->
-                            <div class="flex justify-end">
-                                <div class="max-w-xs lg:max-w-md">
-                                    <div class="bg-purple-600 text-white rounded-2xl rounded-tr-sm px-4 py-3">
-                                        <p class="text-sm">{{ $msg->body }}</p>
-                                    </div>
-                                    <p class="text-xs text-gray-400 mt-1 text-right">
-                                        {{ $msg->created_at->format('M d, h:i A') }}
-                                    </p>
-                                </div>
-                            </div>
-                        @else
-                            <!-- Received Message (Left) -->
-                            <div class="flex justify-start gap-2">
-                                <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-sm flex-shrink-0 mt-1">
-                                    {{ strtoupper(substr($msg->sender->name, 0, 1)) }}
-                                </div>
-                                <div class="max-w-xs lg:max-w-md">
-                                    <div class="bg-gray-100 text-gray-800 rounded-2xl rounded-tl-sm px-4 py-3">
-                                        <p class="text-sm">{{ $msg->body }}</p>
-                                    </div>
-                                    <p class="text-xs text-gray-400 mt-1">
-                                        {{ $msg->created_at->format('M d, h:i A') }}
-                                    </p>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
             </div>
 
-            <!-- Reply Box -->
-            <div class="bg-white shadow-sm rounded-xl overflow-hidden">
-                <div class="p-4 border-b">
-                    <p class="text-sm font-semibold text-gray-700">Reply to {{ $otherUser->name }}</p>
-                </div>
-                <div class="p-4">
-                    <form method="POST" action="{{ route('messages.reply', $thread->first()) }}">
-                        @csrf
-                        <textarea name="body" rows="3"
-                                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-                                  placeholder="Type your reply here...">{{ old('body') }}</textarea>
-                        @error('body')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                        <div class="flex justify-between items-center mt-3">
-                            <a href="{{ route('messages.index') }}"
-                               class="text-sm text-gray-500 hover:text-gray-700">
-                                ← Back to Messages
-                            </a>
-                            <button type="submit"
-                                    class="bg-purple-600 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 transition">
-                                Send Reply ➤
-                            </button>
+            <!-- Messages Thread -->
+            <div style="padding:24px;display:flex;flex-direction:column;gap:16px;max-height:420px;overflow-y:auto;" id="message-thread">
+                @foreach($thread as $msg)
+                    @if($msg->sender_id === auth()->id())
+                        <!-- Sent -->
+                        <div style="display:flex;justify-content:flex-end;">
+                            <div style="max-width:75%;">
+                                <div style="background:linear-gradient(135deg,#7c3aed,#5b21b6);color:white;border-radius:16px;border-bottom-right-radius:4px;padding:12px 16px;">
+                                    <p style="font-size:14px;line-height:1.6;">{{ $msg->body }}</p>
+                                </div>
+                                <p style="font-size:11px;color:#94a3b8;margin-top:4px;text-align:right;">
+                                    {{ $msg->created_at->format('M d, h:i A') }}
+                                </p>
+                            </div>
                         </div>
-                    </form>
-                </div>
+                    @else
+                        <!-- Received -->
+                        <div style="display:flex;justify-content:flex-start;gap:10px;">
+                            <div style="width:32px;height:32px;background:#f1f5f9;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#64748b;font-weight:700;font-size:13px;flex-shrink:0;margin-top:4px;">
+                                {{ strtoupper(substr($msg->sender->name, 0, 1)) }}
+                            </div>
+                            <div style="max-width:75%;">
+                                <div style="background:#f1f5f9;color:#374151;border-radius:16px;border-bottom-left-radius:4px;padding:12px 16px;">
+                                    <p style="font-size:14px;line-height:1.6;">{{ $msg->body }}</p>
+                                </div>
+                                <p style="font-size:11px;color:#94a3b8;margin-top:4px;">
+                                    {{ $msg->created_at->format('M d, h:i A') }}
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
             </div>
+        </div>
 
+        <!-- Reply Box -->
+        <div class="card fade-in fade-in-2" style="overflow:hidden;">
+            <div style="padding:16px 24px;border-bottom:1px solid #f1f5f9;">
+                <p style="font-size:13px;font-weight:600;color:#374151;">↩ Reply to {{ $otherUser->name }}</p>
+            </div>
+            <div style="padding:20px 24px;">
+                <form method="POST" action="{{ route('messages.reply', $thread->first()) }}">
+                    @csrf
+                    <textarea name="body" rows="3"
+                              style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 16px;font-size:14px;color:#1e293b;transition:all 0.2s;outline:none;resize:none;font-family:'DM Sans',sans-serif;"
+                              onfocus="this.style.borderColor='#7c3aed';this.style.boxShadow='0 0 0 3px rgba(124,58,237,0.1)'"
+                              onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'"
+                              placeholder="Type your reply...">{{ old('body') }}</textarea>
+                    @error('body')<p style="color:#ef4444;font-size:12px;margin-top:6px;">{{ $message }}</p>@enderror
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;">
+                        <a href="{{ route('messages.index') }}" style="font-size:13px;color:#64748b;text-decoration:none;font-weight:500;">← Back to Messages</a>
+                        <button type="submit" class="btn-primary" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);padding:10px 24px;">
+                            Send Reply ➤
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Auto scroll to bottom of thread -->
     <script>
         const thread = document.getElementById('message-thread');
         if (thread) thread.scrollTop = thread.scrollHeight;

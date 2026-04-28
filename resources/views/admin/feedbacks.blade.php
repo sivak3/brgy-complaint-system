@@ -1,63 +1,82 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">View Feedbacks</h2>
-            <a href="{{ route('admin.dashboard') }}" class="text-sm text-gray-500 hover:text-gray-700">← Back to Dashboard</a>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <p style="font-size:12px;color:#94a3b8;font-weight:500;text-transform:uppercase;letter-spacing:1px;">Administration</p>
+                <h1 class="font-display" style="font-size:24px;color:#0f2144;margin-top:2px;">View Feedbacks</h1>
+            </div>
+            
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm rounded-xl overflow-hidden">
-                <div class="p-6 border-b">
-                    <h3 class="font-bold text-gray-800">All Resident Feedbacks</h3>
-                    <p class="text-sm text-gray-500 mt-1">Feedback and ratings submitted by barangay residents</p>
+    <!-- Average Rating -->
+    <div class="fade-in fade-in-1" style="background:linear-gradient(135deg,#c9a84c,#a8832a);border-radius:20px;padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+            <p style="color:rgba(255,255,255,0.7);font-size:13px;margin-bottom:8px;">Overall Rating</p>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <p style="color:white;font-size:40px;font-weight:700;" class="font-display">
+                    {{ $feedbacks->count() > 0 ? number_format($feedbacks->avg('rating'), 1) : '0.0' }}
+                </p>
+                <div>
+                    <div style="display:flex;gap:3px;">
+                        @php $avg = $feedbacks->count() > 0 ? round($feedbacks->avg('rating')) : 0; @endphp
+                        @for($i = 1; $i <= 5; $i++)
+                            <span style="font-size:24px;color:{{ $i <= $avg ? 'white' : 'rgba(255,255,255,0.3)' }};">★</span>
+                        @endfor
+                    </div>
+                    <p style="color:rgba(255,255,255,0.6);font-size:13px;">{{ $feedbacks->count() }} total feedbacks</p>
                 </div>
-                <table class="w-full">
-                    <thead class="bg-gray-50 border-b">
-                        <tr>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">#</th>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">Resident</th>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">Subject</th>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">Rating</th>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">Message</th>
-                            <th class="p-4 text-left text-sm font-semibold text-gray-600">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @forelse($feedbacks as $index => $feedback)
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="p-4 text-gray-500 text-sm">{{ $index + 1 }}</td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-700 font-bold text-sm">
-                                        {{ strtoupper(substr($feedback->user->name, 0, 1)) }}
-                                    </div>
-                                    <span class="text-sm font-medium text-gray-800">{{ $feedback->user->name }}</span>
-                                </div>
-                            </td>
-                            <td class="p-4 text-sm font-medium text-gray-700">{{ $feedback->subject }}</td>
-                            <td class="p-4">
-                                <div class="flex">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <span class="{{ $i <= $feedback->rating ? 'text-yellow-400' : 'text-gray-300' }} text-lg">★</span>
-                                    @endfor
-                                </div>
-                            </td>
-                            <td class="p-4 text-sm text-gray-600">{{ Str::limit($feedback->message, 60) }}</td>
-                            <td class="p-4 text-sm text-gray-500">{{ $feedback->created_at->format('M d, Y') }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="p-8 text-center text-gray-500">
-                                <p class="text-4xl mb-3">⭐</p>
-                                <p class="font-medium">No feedbacks yet.</p>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
             </div>
         </div>
+        <div style="font-size:70px;opacity:0.2;">⭐</div>
+    </div>
+
+    <div class="card fade-in fade-in-2">
+        <div style="padding:24px 28px;border-bottom:1px solid #f1f5f9;">
+            <h3 style="font-size:16px;font-weight:700;color:#0f2144;">All Resident Feedbacks</h3>
+            <p style="font-size:13px;color:#94a3b8;margin-top:2px;">Ratings and messages from barangay residents</p>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Resident</th>
+                    <th>Subject</th>
+                    <th>Rating</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($feedbacks as $index => $feedback)
+                <tr>
+                    <td style="color:#94a3b8;font-size:13px;">{{ $index + 1 }}</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div class="avatar" style="background:#fffbeb;color:#a8832a;font-size:12px;">{{ strtoupper(substr($feedback->user->name,0,1)) }}</div>
+                            <span style="font-weight:500;font-size:14px;">{{ $feedback->user->name }}</span>
+                        </div>
+                    </td>
+                    <td style="font-weight:600;color:#0f2144;">{{ $feedback->subject }}</td>
+                    <td>
+                        <div style="display:flex;gap:2px;">
+                            @for($i = 1; $i <= 5; $i++)
+                                <span style="color:{{ $i <= $feedback->rating ? '#c9a84c' : '#e2e8f0' }};font-size:16px;">★</span>
+                            @endfor
+                        </div>
+                    </td>
+                    <td style="color:#64748b;font-size:13px;">{{ Str::limit($feedback->message, 55) }}</td>
+                    <td style="color:#94a3b8;font-size:13px;">{{ $feedback->created_at->format('M d, Y') }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" style="text-align:center;padding:60px;color:#94a3b8;">
+                        <div style="font-size:48px;margin-bottom:12px;">⭐</div>
+                        <p style="font-weight:600;">No feedbacks yet.</p>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </x-app-layout>

@@ -1,198 +1,226 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ auth()->user()->hasRole('admin') ? 'Admin Dashboard' : 'Resident Dashboard' }}
-        </h2>
+        <div>
+            <p style="font-size:12px;color:#94a3b8;font-weight:500;text-transform:uppercase;letter-spacing:1px;">Overview</p>
+            <h1 class="font-display" style="font-size:24px;color:#0f2144;margin-top:2px;">Dashboard</h1>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    @if(auth()->user()->hasRole('admin'))
+    {{-- ADMIN DASHBOARD --}}
 
-            @if(auth()->user()->hasRole('admin'))
-                <!-- Admin Welcome Banner -->
-                <div class="bg-gradient-to-r from-blue-700 to-blue-500 rounded-xl p-6 mb-8 flex items-center justify-between">
-                    <div>
-                        <h3 class="text-white text-2xl font-bold">Welcome, {{ auth()->user()->name }}! 👋</h3>
-                        <p class="text-blue-100 text-sm mt-1">Manage complaints, feedbacks, and residents from your admin panel.</p>
-                    </div>
-                    <span class="text-6xl">🏛️</span>
-                </div>
-
-                <!-- Admin Quick Links -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <a href="{{ route('admin.dashboard') }}"
-                       class="bg-white rounded-xl shadow-sm p-6 border-t-4 border-blue-500 hover:shadow-md transition group">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-3xl group-hover:bg-blue-200 transition">
-                                ⚙️
-                            </div>
-                            <div>
-                                <p class="font-bold text-gray-800">Admin Panel</p>
-                                <p class="text-sm text-gray-500 mt-1">Full system overview</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{{ route('admin.complaints') }}"
-                       class="bg-white rounded-xl shadow-sm p-6 border-t-4 border-yellow-400 hover:shadow-md transition group">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center text-3xl group-hover:bg-yellow-200 transition">
-                                📋
-                            </div>
-                            <div>
-                                <p class="font-bold text-gray-800">Complaints</p>
-                                <p class="text-sm text-gray-500 mt-1">Update complaint status</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{{ route('admin.users') }}"
-                       class="bg-white rounded-xl shadow-sm p-6 border-t-4 border-gray-500 hover:shadow-md transition group">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center text-3xl group-hover:bg-gray-200 transition">
-                                👥
-                            </div>
-                            <div>
-                                <p class="font-bold text-gray-800">Users</p>
-                                <p class="text-sm text-gray-500 mt-1">Manage residents</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-            @else
-                <!-- Resident Welcome Banner -->
-                <div class="bg-gradient-to-r from-blue-700 to-blue-500 rounded-xl p-6 mb-8 flex items-center justify-between">
-                    <div>
-                        <h3 class="text-white text-2xl font-bold">Welcome, {{ auth()->user()->name }}! 👋</h3>
-                        <p class="text-blue-100 text-sm mt-1">Submit complaints, give feedback, and communicate with your barangay officials.</p>
-                    </div>
-                    <span class="text-6xl">🏛️</span>
-                </div>
-
-                <!-- Resident Quick Actions -->
-                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Quick Actions</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <a href="{{ route('complaints.create') }}"
-                       class="bg-white rounded-xl shadow-sm p-6 border-t-4 border-blue-500 hover:shadow-md transition group">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-3xl group-hover:bg-blue-200 transition">
-                                📋
-                            </div>
-                            <div>
-                                <p class="font-bold text-gray-800">File a Complaint</p>
-                                <p class="text-sm text-gray-500 mt-1">Report a barangay issue</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{{ route('feedbacks.create') }}"
-                       class="bg-white rounded-xl shadow-sm p-6 border-t-4 border-green-500 hover:shadow-md transition group">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center text-3xl group-hover:bg-green-200 transition">
-                                ⭐
-                            </div>
-                            <div>
-                                <p class="font-bold text-gray-800">Give Feedback</p>
-                                <p class="text-sm text-gray-500 mt-1">Rate barangay services</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{{ route('messages.create') }}"
-                       class="bg-white rounded-xl shadow-sm p-6 border-t-4 border-purple-500 hover:shadow-md transition group">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center text-3xl group-hover:bg-purple-200 transition">
-                                💬
-                            </div>
-                            <div>
-                                <p class="font-bold text-gray-800">Send Message</p>
-                                <p class="text-sm text-gray-500 mt-1">Talk to barangay staff</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- My Activity -->
-                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">My Activity</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <a href="{{ route('complaints.index') }}"
-                       class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-500 font-medium">My Complaints</p>
-                                <p class="text-4xl font-bold text-blue-600 mt-2">
-                                    {{ auth()->user()->complaints()->count() }}
-                                </p>
-                            </div>
-                            <span class="text-3xl">📋</span>
-                        </div>
-                        <p class="text-xs text-blue-500 mt-3 hover:underline">View all →</p>
-                    </a>
-                    <a href="{{ route('feedbacks.index') }}"
-                       class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-500 font-medium">My Feedbacks</p>
-                                <p class="text-4xl font-bold text-green-600 mt-2">
-                                    {{ auth()->user()->feedbacks()->count() }}
-                                </p>
-                            </div>
-                            <span class="text-3xl">⭐</span>
-                        </div>
-                        <p class="text-xs text-green-500 mt-3 hover:underline">View all →</p>
-                    </a>
-                    <a href="{{ route('messages.index') }}"
-                       class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-500 font-medium">My Messages</p>
-                                <p class="text-4xl font-bold text-purple-600 mt-2">
-                                    {{ auth()->user()->sentMessages()->count() }}
-                                </p>
-                            </div>
-                            <span class="text-3xl">💬</span>
-                        </div>
-                        <p class="text-xs text-purple-500 mt-3 hover:underline">View all →</p>
-                    </a>
-                </div>
-
-                <!-- Recent Complaints Status -->
-                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Recent Complaint Status</h3>
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <table class="w-full">
-                        <thead class="bg-gray-50 border-b">
-                            <tr>
-                                <th class="p-4 text-left text-sm font-semibold text-gray-600">Title</th>
-                                <th class="p-4 text-left text-sm font-semibold text-gray-600">Category</th>
-                                <th class="p-4 text-left text-sm font-semibold text-gray-600">Status</th>
-                                <th class="p-4 text-left text-sm font-semibold text-gray-600">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            @forelse(auth()->user()->complaints()->latest()->take(5)->get() as $complaint)
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-4 text-sm font-medium text-gray-800">{{ $complaint->title }}</td>
-                                <td class="p-4 text-sm text-gray-600">{{ ucfirst($complaint->category) }}</td>
-                                <td class="p-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-semibold
-                                        {{ $complaint->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                        {{ $complaint->status === 'in_progress' ? 'bg-blue-100 text-blue-800' : '' }}
-                                        {{ $complaint->status === 'resolved' ? 'bg-green-100 text-green-800' : '' }}">
-                                        {{ $complaint->status === 'in_progress' ? 'In Progress' : ucfirst($complaint->status) }}
-                                    </span>
-                                </td>
-                                <td class="p-4 text-sm text-gray-500">{{ $complaint->created_at->format('M d, Y') }}</td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="p-8 text-center text-gray-500">
-                                    <p class="text-3xl mb-2">📋</p>
-                                    <p class="text-sm">No complaints filed yet.</p>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            @endif
-
+        <!-- Welcome Banner -->
+        <div class="fade-in fade-in-1" style="background:linear-gradient(135deg,#0f2144 0%,#1a3a6b 100%);border-radius:20px;padding:32px 36px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:center;overflow:hidden;position:relative;">
+            <div style="position:absolute;top:-40px;right:200px;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.15) 0%,transparent 70%);border-radius:50%;"></div>
+            <div style="position:relative;z-index:1;">
+                <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:8px;">Good day,</p>
+                <h2 class="font-display" style="color:white;font-size:28px;margin-bottom:10px;">{{ auth()->user()->name }}</h2>
+                <p style="color:rgba(255,255,255,0.5);font-size:14px;">Here's what's happening in your barangay today.</p>
+            </div>
+            <div style="font-size:80px;opacity:0.2;position:relative;z-index:1;">🏛️</div>
         </div>
-    </div>
+
+        <!-- Stat Cards -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px;">
+            <div class="stat-card fade-in fade-in-1" style="border-top:4px solid #1a3a6b;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div>
+                        <p style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Total Complaints</p>
+                        <p style="font-size:36px;font-weight:700;color:#0f2144;margin:8px 0 4px;" class="font-display">{{ \App\Models\Complaint::count() }}</p>
+                        <a href="{{ route('admin.complaints') }}" style="font-size:12px;color:#1a3a6b;text-decoration:none;font-weight:500;">View all →</a>
+                    </div>
+                    <div style="width:48px;height:48px;background:#eff6ff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;">📋</div>
+                </div>
+            </div>
+            <div class="stat-card fade-in fade-in-2" style="border-top:4px solid #f59e0b;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div>
+                        <p style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Pending</p>
+                        <p style="font-size:36px;font-weight:700;color:#0f2144;margin:8px 0 4px;" class="font-display">{{ \App\Models\Complaint::where('status','pending')->count() }}</p>
+                        <p style="font-size:12px;color:#f59e0b;font-weight:500;">Awaiting action</p>
+                    </div>
+                    <div style="width:48px;height:48px;background:#fffbeb;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;">⏳</div>
+                </div>
+            </div>
+            <div class="stat-card fade-in fade-in-3" style="border-top:4px solid #10b981;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div>
+                        <p style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Resolved</p>
+                        <p style="font-size:36px;font-weight:700;color:#0f2144;margin:8px 0 4px;" class="font-display">{{ \App\Models\Complaint::where('status','resolved')->count() }}</p>
+                        <p style="font-size:12px;color:#10b981;font-weight:500;">Successfully closed</p>
+                    </div>
+                    <div style="width:48px;height:48px;background:#f0fdf4;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;">✅</div>
+                </div>
+            </div>
+            <div class="stat-card fade-in fade-in-4" style="border-top:4px solid #8b5cf6;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div>
+                        <p style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Feedbacks</p>
+                        <p style="font-size:36px;font-weight:700;color:#0f2144;margin:8px 0 4px;" class="font-display">{{ \App\Models\Feedback::count() }}</p>
+                        <a href="{{ route('admin.feedbacks') }}" style="font-size:12px;color:#8b5cf6;text-decoration:none;font-weight:500;">View all →</a>
+                    </div>
+                    <div style="width:48px;height:48px;background:#f5f3ff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;">⭐</div>
+                </div>
+            </div>
+            <div class="stat-card fade-in fade-in-5" style="border-top:4px solid #ec4899;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div>
+                        <p style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Messages</p>
+                        <p style="font-size:36px;font-weight:700;color:#0f2144;margin:8px 0 4px;" class="font-display">{{ \App\Models\Message::count() }}</p>
+                        <a href="{{ route('admin.messages') }}" style="font-size:12px;color:#ec4899;text-decoration:none;font-weight:500;">View all →</a>
+                    </div>
+                    <div style="width:48px;height:48px;background:#fdf2f8;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;">💬</div>
+                </div>
+            </div>
+            <div class="stat-card fade-in fade-in-6" style="border-top:4px solid #c9a84c;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div>
+                        <p style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Residents</p>
+                        <p style="font-size:36px;font-weight:700;color:#0f2144;margin:8px 0 4px;" class="font-display">{{ \App\Models\User::count() }}</p>
+                        <a href="{{ route('admin.users') }}" style="font-size:12px;color:#c9a84c;text-decoration:none;font-weight:500;">View all →</a>
+                    </div>
+                    <div style="width:48px;height:48px;background:#fffbeb;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;">👥</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Complaints Table -->
+        <div class="card fade-in fade-in-4">
+            <div style="padding:24px 28px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <h3 style="font-size:16px;font-weight:700;color:#0f2144;">Recent Complaints</h3>
+                    <p style="font-size:13px;color:#94a3b8;margin-top:2px;">Latest submissions from residents</p>
+                </div>
+                <a href="{{ route('admin.complaints') }}" class="btn-primary" style="font-size:13px;padding:8px 16px;">View All</a>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Resident</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse(\App\Models\Complaint::with('user')->latest()->take(5)->get() as $complaint)
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div class="avatar" style="background:#eff6ff;color:#1a3a6b;font-size:12px;">{{ strtoupper(substr($complaint->user->name,0,1)) }}</div>
+                                <span style="font-weight:500;">{{ $complaint->user->name }}</span>
+                            </div>
+                        </td>
+                        <td style="font-weight:500;color:#0f2144;">{{ $complaint->title }}</td>
+                        <td style="color:#64748b;">{{ ucfirst($complaint->category) }}</td>
+                        <td>
+                            <span class="badge-{{ $complaint->status }}">
+                                {{ $complaint->status === 'in_progress' ? 'In Progress' : ucfirst($complaint->status) }}
+                            </span>
+                        </td>
+                        <td style="color:#94a3b8;">{{ $complaint->created_at->format('M d, Y') }}</td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="5" style="text-align:center;padding:40px;color:#94a3b8;">No complaints yet.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+    @else
+    {{-- RESIDENT DASHBOARD --}}
+
+        <!-- Welcome Banner -->
+        <div class="fade-in fade-in-1" style="background:linear-gradient(135deg,#0f2144 0%,#1a3a6b 100%);border-radius:20px;padding:32px 36px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-40px;right:160px;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.15) 0%,transparent 70%);border-radius:50%;"></div>
+            <div style="position:relative;z-index:1;">
+                <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:8px;">Welcome back,</p>
+                <h2 class="font-display" style="color:white;font-size:28px;margin-bottom:10px;">{{ auth()->user()->name }}</h2>
+                <p style="color:rgba(255,255,255,0.5);font-size:14px;">What would you like to do today?</p>
+            </div>
+            <div style="font-size:80px;opacity:0.2;position:relative;z-index:1;">🏛️</div>
+        </div>
+
+        <!-- Quick Actions -->
+        <p style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px;">Quick Actions</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px;">
+            <a href="{{ route('complaints.create') }}" class="fade-in fade-in-1" style="text-decoration:none;background:white;border-radius:16px;padding:24px;border:1px solid #e8ecf4;transition:all 0.2s;box-shadow:0 2px 16px rgba(0,0,0,0.06);display:block;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 16px rgba(0,0,0,0.06)'">
+                <div style="width:52px;height:52px;background:linear-gradient(135deg,#1a3a6b,#0f2144);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px;">📋</div>
+                <p style="font-weight:700;color:#0f2144;font-size:15px;margin-bottom:6px;">File a Complaint</p>
+                <p style="font-size:13px;color:#94a3b8;">Report a barangay issue</p>
+            </a>
+            <a href="{{ route('feedbacks.create') }}" class="fade-in fade-in-2" style="text-decoration:none;background:white;border-radius:16px;padding:24px;border:1px solid #e8ecf4;transition:all 0.2s;box-shadow:0 2px 16px rgba(0,0,0,0.06);display:block;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 16px rgba(0,0,0,0.06)'">
+                <div style="width:52px;height:52px;background:linear-gradient(135deg,#c9a84c,#a8832a);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px;">⭐</div>
+                <p style="font-weight:700;color:#0f2144;font-size:15px;margin-bottom:6px;">Give Feedback</p>
+                <p style="font-size:13px;color:#94a3b8;">Rate barangay services</p>
+            </a>
+            <a href="{{ route('messages.create') }}" class="fade-in fade-in-3" style="text-decoration:none;background:white;border-radius:16px;padding:24px;border:1px solid #e8ecf4;transition:all 0.2s;box-shadow:0 2px 16px rgba(0,0,0,0.06);display:block;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 16px rgba(0,0,0,0.06)'">
+                <div style="width:52px;height:52px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px;">💬</div>
+                <p style="font-weight:700;color:#0f2144;font-size:15px;margin-bottom:6px;">Send Message</p>
+                <p style="font-size:13px;color:#94a3b8;">Talk to barangay staff</p>
+            </a>
+        </div>
+
+        <!-- Activity Stats -->
+        <p style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px;">My Activity</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px;">
+            <a href="{{ route('complaints.index') }}" style="text-decoration:none;" class="fade-in fade-in-4">
+                <div class="stat-card" style="border-left:4px solid #1a3a6b;cursor:pointer;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <p style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">My Complaints</p>
+                    <p style="font-size:36px;font-weight:700;color:#1a3a6b;margin:8px 0 4px;" class="font-display">{{ auth()->user()->complaints()->count() }}</p>
+                    <p style="font-size:12px;color:#94a3b8;">View all →</p>
+                </div>
+            </a>
+            <a href="{{ route('feedbacks.index') }}" style="text-decoration:none;" class="fade-in fade-in-5">
+                <div class="stat-card" style="border-left:4px solid #c9a84c;cursor:pointer;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <p style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">My Feedbacks</p>
+                    <p style="font-size:36px;font-weight:700;color:#c9a84c;margin:8px 0 4px;" class="font-display">{{ auth()->user()->feedbacks()->count() }}</p>
+                    <p style="font-size:12px;color:#94a3b8;">View all →</p>
+                </div>
+            </a>
+            <a href="{{ route('messages.index') }}" style="text-decoration:none;" class="fade-in fade-in-6">
+                <div class="stat-card" style="border-left:4px solid #7c3aed;cursor:pointer;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <p style="font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">My Messages</p>
+                    <p style="font-size:36px;font-weight:700;color:#7c3aed;margin:8px 0 4px;" class="font-display">{{ auth()->user()->sentMessages()->count() }}</p>
+                    <p style="font-size:12px;color:#94a3b8;">View all →</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Recent Complaints -->
+        <div class="card fade-in fade-in-5">
+            <div style="padding:24px 28px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <h3 style="font-size:16px;font-weight:700;color:#0f2144;">My Recent Complaints</h3>
+                    <p style="font-size:13px;color:#94a3b8;margin-top:2px;">Track your complaint statuses</p>
+                </div>
+                <a href="{{ route('complaints.create') }}" class="btn-primary" style="font-size:13px;padding:8px 16px;">+ New Complaint</a>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse(auth()->user()->complaints()->latest()->take(5)->get() as $complaint)
+                    <tr>
+                        <td style="font-weight:500;color:#0f2144;">{{ $complaint->title }}</td>
+                        <td style="color:#64748b;">{{ ucfirst($complaint->category) }}</td>
+                        <td><span class="badge-{{ $complaint->status }}">{{ $complaint->status === 'in_progress' ? 'In Progress' : ucfirst($complaint->status) }}</span></td>
+                        <td style="color:#94a3b8;">{{ $complaint->created_at->format('M d, Y') }}</td>
+                        <td><a href="{{ route('complaints.show', $complaint) }}" style="color:#1a3a6b;font-size:13px;font-weight:500;text-decoration:none;">View →</a></td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="5" style="text-align:center;padding:40px;color:#94a3b8;">No complaints yet. <a href="{{ route('complaints.create') }}" style="color:#1a3a6b;font-weight:500;">File one now →</a></td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    @endif
 </x-app-layout>
