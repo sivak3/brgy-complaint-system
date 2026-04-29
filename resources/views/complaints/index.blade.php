@@ -12,6 +12,22 @@
         </div>
     @endif
 
+    <!-- Stats Row -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+        <div class="stat-card fade-in fade-in-1" style="border-left:4px solid #1a3a6b;padding:20px;">
+            <p style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Total Filed</p>
+            <p style="font-size:28px;font-weight:700;color:#0f2144;margin:4px 0;" class="font-display">{{ $complaints->count() }}</p>
+        </div>
+        <div class="stat-card fade-in fade-in-2" style="border-left:4px solid #f59e0b;padding:20px;">
+            <p style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Pending</p>
+            <p style="font-size:28px;font-weight:700;color:#f59e0b;margin:4px 0;" class="font-display">{{ $complaints->where('status','pending')->count() }}</p>
+        </div>
+        <div class="stat-card fade-in fade-in-3" style="border-left:4px solid #10b981;padding:20px;">
+            <p style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Resolved</p>
+            <p style="font-size:28px;font-weight:700;color:#10b981;margin:4px 0;" class="font-display">{{ $complaints->where('status','resolved')->count() }}</p>
+        </div>
+    </div>
+
     <div class="card fade-in fade-in-1">
         <div style="padding:24px 28px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
             <div>
