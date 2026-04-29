@@ -12,6 +12,26 @@
         </div>
     @endif
 
+    <!-- Stats Row -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+        <div class="stat-card fade-in fade-in-1" style="border-left:4px solid #c9a84c;padding:20px;">
+            <p style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Total Feedbacks</p>
+            <p style="font-size:28px;font-weight:700;color:#0f2144;margin:4px 0;" class="font-display">{{ $feedbacks->count() }}</p>
+        </div>
+        <div class="stat-card fade-in fade-in-2" style="border-left:4px solid #10b981;padding:20px;">
+            <p style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Average Rating</p>
+            <p style="font-size:28px;font-weight:700;color:#10b981;margin:4px 0;" class="font-display">
+                {{ $feedbacks->count() > 0 ? number_format($feedbacks->avg('rating'), 1) : '0.0' }}
+            </p>
+        </div>
+        <div class="stat-card fade-in fade-in-3" style="border-left:4px solid #1a3a6b;padding:20px;">
+            <p style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">5 Star Ratings</p>
+            <p style="font-size:28px;font-weight:700;color:#1a3a6b;margin:4px 0;" class="font-display">
+                {{ $feedbacks->where('rating', 5)->count() }}
+            </p>
+        </div>
+    </div>
+
     <div class="card fade-in fade-in-1">
         <div style="padding:24px 28px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
             <div>
