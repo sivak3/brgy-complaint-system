@@ -7,7 +7,7 @@
     </x-slot>
 
     <!-- Welcome Banner -->
-    <div class="fade-in fade-in-1" style="background:linear-gradient(135deg,#0f2144 0%,#1a3a6b 100%);border-radius:20px;padding:32px 36px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:center;overflow:hidden;position:relative;">
+    <div class="fade-in fade-in-1" style="background:linear-gradient(135deg,#c97b5a 0%,#e8956d 100%);border-radius:20px;padding:32px 36px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:center;overflow:hidden;position:relative;">
         <div style="position:absolute;top:-40px;right:200px;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.15) 0%,transparent 70%);border-radius:50%;"></div>
         <div style="position:relative;z-index:1;">
             <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:8px;">Welcome back,</p>
